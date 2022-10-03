@@ -1,0 +1,82 @@
+-- CREACION DE LA BASE DE DATOS
+create schema if not exists proyecto_certificacion_halal;
+use proyecto_certificacion_halal; 
+
+-- CREACION DE LAS ENTIDADES
+
+CREATE TABLE IF NOT EXISTS tiposdecertificados( 
+IdCertificados INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+Establecimiento VARCHAR(255) NOT NULL,
+Exportacion VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Argentina( 
+IdArgentina INT PRIMARY KEY NOT NULL auto_increment,
+BuenosAires VARCHAR(255) NOT NULL,
+Cordoba VARCHAR(255) NOT NULL,
+SantaFe VARCHAR(255) NOT NULL,
+Mendoza VARCHAR(255) NOT NULL,
+SantiagodelEstero VARCHAR(255) NOT NULL)
+
+CREATE TABLE IF NOT EXISTS Productos(
+IdProductos INT PRIMARY KEY NOT NULL AUTO_Increment, 
+Aviar VARCHAR(255) NOT NULL,
+Carnicos VARCHAR(255) NOT NULL,
+Quesos VARCHAR(255) NOT NULL,
+Aceites VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Auditores(
+IdAuditores INT PRIMARY KEY NOT NULL AUTO_Increment, 
+Nombre VARCHAR(255) NOT NULL,
+Apellido VARCHAR(255) NOT NULL,
+Titulos VARCHAR(255) NOT NULL,
+Email VARCHAR(255) UNIQUE,
+Direccion VARCHAR(255) NOT NULL
+); 
+
+CREATE TABLE IF NOT EXISTS Destinos(
+IdDestinos INT PRIMARY KEY NOT NULL AUTO_Increment, 
+ArabiaSaudita VARCHAR(255) NOT NULL,
+Malasia VARCHAR(255) NOT NULL,
+Indonesia VARCHAR(255) NOT NULL,
+Singapur VARCHAR(255) NOT NULL,
+Alemania VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Contenedores(
+IdContenedores INT PRIMARY KEY NOT NULL AUTO_Increment, 
+NumContenedor NUMERIC NOT NULL,
+IdDestinos INT NOT NULL,
+foreign key (IdDestinos) references Destinos(IdDestinos)
+);
+
+
+CREATE TABLE IF NOT EXISTS Ubicacion(
+IdUbicacion INT PRIMARY KEY NOT NULL AUTO_Increment, 
+Chile VARCHAR(255) NOT NULL,
+Uruguay VARCHAR(255) NOT NULL,
+Brasil VARCHAR(255) NOT NULL,
+IdArgentina INT NOT NULL,
+foreign key (IdArgentina) references Argentina(IdArgentina)
+);
+
+CREATE TABLE IF NOT EXISTS Clientes(
+IdClientes INT PRIMARY KEY NOT NULL AUTO_Increment, 
+Nombre VARCHAR(255) NOT NULL,
+IdProductos int NOT NULL,
+IdDestinos INT NOT NULL,
+IdUbicacion INT NOT NULL,
+IdAuditores INT NOT NULL,
+foreign key (IdProductos) references Productos(IdProductos),
+foreign key (IdDestinos) references Destinos(IdDestinos),
+foreign key (IdUbicacion) references Ubicacion(IdUbicacion),
+foreign key (IdAuditores) references Auditores(IdAuditores)
+);
+
+
+
+
+
+
+
