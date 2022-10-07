@@ -73,10 +73,3 @@ foreign key (IdDestinos) references Destinos(IdDestinos),
 foreign key (IdUbicacion) references Ubicacion(IdUbicacion),
 foreign key (IdAuditores) references Auditores(IdAuditores)
 );
-
-
-
-
-
-
-
