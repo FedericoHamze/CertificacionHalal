@@ -1,75 +1,144 @@
--- CREACION DE LA BASE DE DATOS
-create schema if not exists proyecto_certificacion_halal;
-use proyecto_certificacion_halal; 
+CREATE SCHEMA IF NOT EXISTS `proyecto_certificacionhalal` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
+USE `proyecto_certificacionhalal` ;
 
--- CREACION DE LAS ENTIDADES
-
-CREATE TABLE IF NOT EXISTS tiposdecertificados( 
-IdCertificados INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-Establecimiento VARCHAR(255) NOT NULL,
-Exportacion VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS Argentina( 
-IdArgentina INT PRIMARY KEY NOT NULL auto_increment,
-BuenosAires VARCHAR(255) NOT NULL,
-Cordoba VARCHAR(255) NOT NULL,
-SantaFe VARCHAR(255) NOT NULL,
-Mendoza VARCHAR(255) NOT NULL,
-SantiagodelEstero VARCHAR(255) NOT NULL)
-
-CREATE TABLE IF NOT EXISTS Productos(
-IdProductos INT PRIMARY KEY NOT NULL AUTO_Increment, 
-Aviar VARCHAR(255) NOT NULL,
-Carnicos VARCHAR(255) NOT NULL,
-Quesos VARCHAR(255) NOT NULL,
-Aceites VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS Auditores(
-IdAuditores INT PRIMARY KEY NOT NULL AUTO_Increment, 
-Nombre VARCHAR(255) NOT NULL,
-Apellido VARCHAR(255) NOT NULL,
-Titulos VARCHAR(255) NOT NULL,
-Email VARCHAR(255) UNIQUE,
-Direccion VARCHAR(255) NOT NULL
-); 
-
-CREATE TABLE IF NOT EXISTS Destinos(
-IdDestinos INT PRIMARY KEY NOT NULL AUTO_Increment, 
-ArabiaSaudita VARCHAR(255) NOT NULL,
-Malasia VARCHAR(255) NOT NULL,
-Indonesia VARCHAR(255) NOT NULL,
-Singapur VARCHAR(255) NOT NULL,
-Alemania VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS Contenedores(
-IdContenedores INT PRIMARY KEY NOT NULL AUTO_Increment, 
-NumContenedor NUMERIC NOT NULL,
-IdDestinos INT NOT NULL,
-foreign key (IdDestinos) references Destinos(IdDestinos)
-);
+-- -----------------------------------------------------
+-- Table `proyecto_certificacionhalal`.`auditores`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `proyecto_certificacionhalal`.`auditores` (
+  `IdAuditores` INT NOT NULL AUTO_INCREMENT,
+  `Nombre` VARCHAR(255) NOT NULL,
+  `Apellido` VARCHAR(255) NOT NULL,
+  `Titulos` VARCHAR(255) NOT NULL,
+  `Email` VARCHAR(255) NULL DEFAULT NULL,
+  `Direccion` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`IdAuditores`),
+  UNIQUE INDEX `Email` (`Email` ASC) VISIBLE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
 
 
-CREATE TABLE IF NOT EXISTS Ubicacion(
-IdUbicacion INT PRIMARY KEY NOT NULL AUTO_Increment, 
-Chile VARCHAR(255) NOT NULL,
-Uruguay VARCHAR(255) NOT NULL,
-Brasil VARCHAR(255) NOT NULL,
-IdArgentina INT NOT NULL,
-foreign key (IdArgentina) references Argentina(IdArgentina)
-);
+-- -----------------------------------------------------
+-- Table `proyecto_certificacionhalal`.`ciudadorigen`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `proyecto_certificacionhalal`.`ciudadorigen` (
+  `IdCiudadOrigen` INT NOT NULL AUTO_INCREMENT,
+  `Ciudad` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`IdCiudadOrigen`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
 
-CREATE TABLE IF NOT EXISTS Clientes(
-IdClientes INT PRIMARY KEY NOT NULL AUTO_Increment, 
-Nombre VARCHAR(255) NOT NULL,
-IdProductos int NOT NULL,
-IdDestinos INT NOT NULL,
-IdUbicacion INT NOT NULL,
-IdAuditores INT NOT NULL,
-foreign key (IdProductos) references Productos(IdProductos),
-foreign key (IdDestinos) references Destinos(IdDestinos),
-foreign key (IdUbicacion) references Ubicacion(IdUbicacion),
-foreign key (IdAuditores) references Auditores(IdAuditores)
-);
+
+-- -----------------------------------------------------
+-- Table `proyecto_certificacionhalal`.`productos`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `proyecto_certificacionhalal`.`productos` (
+  `IdProductos` INT NOT NULL AUTO_INCREMENT,
+  `NombreProducto` VARCHAR(255) NOT NULL,
+  `TipoProducto` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`IdProductos`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `proyecto_certificacionhalal`.`destinos`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `proyecto_certificacionhalal`.`destinos` (
+  `IdDestinos` INT NOT NULL AUTO_INCREMENT,
+  `Pais` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`IdDestinos`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `proyecto_certificacionhalal`.`paises`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `proyecto_certificacionhalal`.`paises` (
+  `IdPaises` INT NOT NULL AUTO_INCREMENT,
+  `IdCiudadOrigen` INT NOT NULL,
+  `Pais` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`IdPaises`),
+  INDEX `IdCiudadOrigen` (`IdCiudadOrigen` ASC) VISIBLE,
+  CONSTRAINT `paises_ibfk_1`
+    FOREIGN KEY (`IdCiudadOrigen`)
+    REFERENCES `proyecto_certificacionhalal`.`ciudadorigen` (`IdCiudadOrigen`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `proyecto_certificacionhalal`.`tiposdecertificados`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `proyecto_certificacionhalal`.`tiposdecertificados` (
+  `IdCertificados` INT NOT NULL AUTO_INCREMENT,
+  `Num_CertEstablecimiento` INT NOT NULL,
+  `Exportacion` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`IdCertificados`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `proyecto_certificacionhalal`.`clientes`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `proyecto_certificacionhalal`.`clientes` (
+  `IdClientes` INT NOT NULL AUTO_INCREMENT,
+  `Nombre` VARCHAR(255) NOT NULL,
+  `IdProductos` INT NOT NULL,
+  `IdDestinos` INT NOT NULL,
+  `IdPaises` INT NOT NULL,
+  `IdAuditores` INT NOT NULL,
+  `IdCertificados` INT NOT NULL,
+  PRIMARY KEY (`IdClientes`),
+  INDEX `IdProductos` (`IdProductos` ASC) VISIBLE,
+  INDEX `IdDestinos` (`IdDestinos` ASC) VISIBLE,
+  INDEX `IdPaises` (`IdPaises` ASC) VISIBLE,
+  INDEX `IdAuditores` (`IdAuditores` ASC) VISIBLE,
+  INDEX `IdCertificados` (`IdCertificados` ASC) VISIBLE,
+  CONSTRAINT `clientes_ibfk_1`
+    FOREIGN KEY (`IdProductos`)
+    REFERENCES `proyecto_certificacionhalal`.`productos` (`IdProductos`),
+  CONSTRAINT `clientes_ibfk_2`
+    FOREIGN KEY (`IdDestinos`)
+    REFERENCES `proyecto_certificacionhalal`.`destinos` (`IdDestinos`),
+  CONSTRAINT `clientes_ibfk_3`
+    FOREIGN KEY (`IdPaises`)
+    REFERENCES `proyecto_certificacionhalal`.`paises` (`IdPaises`),
+  CONSTRAINT `clientes_ibfk_4`
+    FOREIGN KEY (`IdAuditores`)
+    REFERENCES `proyecto_certificacionhalal`.`auditores` (`IdAuditores`),
+  CONSTRAINT `clientes_ibfk_5`
+    FOREIGN KEY (`IdCertificados`)
+    REFERENCES `proyecto_certificacionhalal`.`tiposdecertificados` (`IdCertificados`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `proyecto_certificacionhalal`.`contenedores`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `proyecto_certificacionhalal`.`contenedores` (
+  `IdContenedores` INT NOT NULL AUTO_INCREMENT,
+  `NumContenedor` VARCHAR(255) NOT NULL,
+  `IdDestinos` INT NOT NULL,
+  PRIMARY KEY (`IdContenedores`),
+  INDEX `IdDestinos` (`IdDestinos` ASC) VISIBLE,
+  CONSTRAINT `contenedores_ibfk_1`
+    FOREIGN KEY (`IdDestinos`)
+    REFERENCES `proyecto_certificacionhalal`.`destinos` (`IdDestinos`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
